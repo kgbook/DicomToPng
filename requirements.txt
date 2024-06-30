@@ -1,0 +1,4 @@
+SimpleITK
+Pillow
+numpy
+matplotlib
