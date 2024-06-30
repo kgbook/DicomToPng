@@ -1,4 +1,3 @@
 SimpleITK
 Pillow
 numpy
-matplotlib
