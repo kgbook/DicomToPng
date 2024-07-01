@@ -4,13 +4,6 @@ from PIL import Image
 import DicomMetaData
 import os.path
 
-def get_dimension(image):
-    # 获取图像尺寸信息
-    width = image.GetWidth()
-    height = image.GetHeight()
-    return width, height
-
-
 def apply_window_level(image_array, window_width, window_center):
     """
     应用窗宽窗位调整图像亮度和对比度。
@@ -20,7 +13,6 @@ def apply_window_level(image_array, window_width, window_center):
     windowed_img = np.clip(image_array, img_min, img_max)
     windowed_img = (windowed_img - img_min) / (img_max - img_min) * 255.0
     return windowed_img.astype(np.uint8)
-
 
 def dump_pngs(dicom_directory, output_directory):
     # 读取DICOM序列
