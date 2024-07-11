@@ -12,7 +12,7 @@ Currently, there hasn't been success finding a batch conversion tool that meets 
 ## Usage
 ```bash
 pip install -r requirements.txt
-python DicomToPng.py
+python dicom_to_png.py
 ```
 
 output as below:
