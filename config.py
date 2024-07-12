@@ -10,7 +10,7 @@ class Font:
 class Config:
     def __init__(self):
         self.config = configparser.ConfigParser()
-        self.config.read('config.ini')
+        self.config.read('resource/conf/config.ini')
         self.in_dir = self.config['dcom']['dir']
         self.out_dir = self.config['png']['dir']
         font = self.config['font']['font']

@@ -37,19 +37,21 @@ class DicomInfo:
         try:
             return image.GetMetaData(tag)
         except RuntimeError:  # 如果指定的标签不存在，则捕获异常
-            return f"{name} Not Available"
+            return f"N/A"
 
     def get_patient_name(self, image: sitk.Image):
         return self.get_dicom_metadata(image, '0010|0010', 'Patient Name')
 
     def get_patient_id(self, image: sitk.Image):
-        return self.get_dicom_metadata(image, '0010|0020', "Patient ID")  # Patient ID
+        return self.get_dicom_metadata(image, '0010|0020', "Patient ID")
 
     def get_patient_sex(self, image: sitk.Image):
-        return self.get_dicom_metadata(image, '0010|0040', "Patient Sex")  # Patient's Sex
+        return self.get_dicom_metadata(image, '0010|0040', "Patient Sex")
 
     def get_patient_birthday(self, image: sitk.Image):
-        return self.get_dicom_metadata(image, '0010|0030', "Patient Birthday")  # Patient's Birth Date
+        date = self.get_dicom_metadata(image, '0010|0030', "Patient Birthday")
+        formatted_date = date[:4] + '-' + date[4:6] + '-' + date[6:]
+        return formatted_date
 
     def get_patient_age(self, image: sitk.Image):
         return self.get_dicom_metadata(image, '0010|1010', 'Patient Age')
@@ -58,14 +60,17 @@ class DicomInfo:
         return self.get_dicom_metadata(image, '0008|0080', 'Hospital Name')
 
     def get_study_id(self, image: sitk.Image):
-        return self.get_dicom_metadata(image, '0020|0010', "Study ID")  # Study ID
+        return self.get_dicom_metadata(image, '0020|0010', "Study ID")
 
     def get_study_date(self, image: sitk.Image):
-        return self.get_dicom_metadata(image, '0008|0020', 'Study Date')
+        date = self.get_dicom_metadata(image, '0008|0020', 'Study Date')
+        formatted_date = date[:4] + '-' + date[4:6] + '-' + date[6:]
+        return formatted_date
 
     def get_study_time(self, image: sitk.Image):
-        study_time = self.get_dicom_metadata(image, '0008|0030', 'Study Time')
-        return study_time.split('.')[0]
+        study_time = self.get_dicom_metadata(image, '0008|0030', 'Study Time').split('.')[0]
+        formatted_time = study_time[:2] + ':' + study_time[2:4] + ':' + study_time[4:]
+        return formatted_time
 
     def get_study_description(self, image: sitk.Image):
         return self.get_dicom_metadata(image, '0008|1030', "Study Description")

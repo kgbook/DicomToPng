@@ -19,7 +19,7 @@ output as below:
 
 <div style="text-align: center;">
 
-![output](output.jpg)
+![output](resource/images/final/output.jpg)
 
 </div>
 

@@ -23,6 +23,7 @@ def add_text_to_image(out_img: str, in_img: str, ctx: str, position: tuple[int, 
         font = ImageFont.load_default()
     draw.text(position, ctx, font=font, fill=conf.color)
     image.save(out_img)
+
 def dump_pngs(output_directory: str, dicom_directory: str, title: Font, text: Font):
     # 读取DICOM序列
     reader = sitk.ImageSeriesReader()
@@ -33,18 +34,15 @@ def dump_pngs(output_directory: str, dicom_directory: str, title: Font, text: Fo
     print(f"Found {len(series_ids)} DICOM series in the directory.")
 
     for series_id in series_ids:
-        # 获取当前序列ID的所有文件名
         series_file_names = reader.GetGDCMSeriesFileNames(dicom_directory, series_id)
         reader.SetFileNames(series_file_names)
         image_array = reader.Execute()
         series_array = sitk.GetArrayFromImage(image_array)
 
-        # 读取序列中的第一个文件来获取窗宽窗位
         first_image = sitk.ReadImage(series_file_names[0])
         series_info = DicomInfo(first_image)
         print(f"{series_info.__dict__}")
         for i in range(series_array.shape[0]):
-            # print(f"Processing file {i} of {len(series_file_names)}, {series_file_names[i]}")
             slice = series_array[i, :, :]
             windowed_slice = apply_window_level(slice, series_info.window_width,
                                                 series_info.window_center)
@@ -54,7 +52,17 @@ def dump_pngs(output_directory: str, dicom_directory: str, title: Font, text: Fo
                 os.makedirs(out_dirname)
             output_file_path = f"{out_dirname}/{out_basename}"
             Image.fromarray(windowed_slice).save(output_file_path)
-            add_text_to_image(out_img=output_file_path, in_img=output_file_path,conf=title,ctx=series_info.patient_name, position=(10, 10))
-            add_text_to_image(out_img=output_file_path, in_img=output_file_path,conf=text,ctx=series_info.patient_id, position=(10, 30))
-            add_text_to_image(out_img=output_file_path, in_img=output_file_path, conf=text,ctx=f'{series_info.patient_birthday}, {series_info.patient_sex}, {series_info.patient_age}', position=(10, 45))
-            add_text_to_image(out_img=output_file_path, in_img=output_file_path, conf=text,ctx=f'{series_info.study_date}{series_info.study_time}',position=(10, 70))
+
+            if 'T2_Images' in series_info.series_name:
+                continue
+            add_text_to_image(out_img=output_file_path, in_img=output_file_path,conf=title,ctx=series_info.patient_name, position=(5, 10))
+            add_text_to_image(out_img=output_file_path, in_img=output_file_path,conf=text,ctx=series_info.patient_id, position=(5, 30))
+            add_text_to_image(out_img=output_file_path, in_img=output_file_path, conf=text,ctx=f'{series_info.patient_birthday}, {series_info.patient_sex}, {series_info.patient_age}', position=(5, 45))
+            add_text_to_image(out_img=output_file_path, in_img=output_file_path, conf=text,ctx=f'{series_info.study_date} {series_info.study_time}',position=(5, 70))
+            add_text_to_image(out_img=output_file_path, in_img=output_file_path, conf=text,ctx=f'图像: {i}/{len(series_file_names)}', position=(5, 85))
+            add_text_to_image(out_img=output_file_path, in_img=output_file_path, conf=text, ctx=f'序列: {series_info.series_number}', position=(5, 100))
+            add_text_to_image(out_img=output_file_path, in_img=output_file_path, conf=text, ctx=series_info.series_name, position=(5, series_info.image_height - 75))
+            add_text_to_image(out_img=output_file_path, in_img=output_file_path, conf=text, ctx=f'TR:{series_info.TR}', position=(5, series_info.image_height - 60))
+            add_text_to_image(out_img=output_file_path, in_img=output_file_path, conf=text, ctx=f'TE:{series_info.TE}',position=(5, series_info.image_height - 45))
+            add_text_to_image(out_img=output_file_path, in_img=output_file_path, conf=text, ctx=f'TP:{series_info.TP}', position=(5, series_info.image_height - 30))
+            add_text_to_image(out_img=output_file_path, in_img=output_file_path, conf=text, ctx=f'SP:{series_info.SP}', position=(5, series_info.image_height - 15))
