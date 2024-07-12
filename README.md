@@ -23,6 +23,16 @@ output as below:
 
 </div>
 
+Single image:
+
+<div style="text-align: center;">
+
+![draw_meta_info](resource/images/final/draw_meta_info.png)
+
+</div>
+
+Concatenated image: TODO
+
 ## TODO
 - [ ] Support concatenating and saving images as multiple individual images in a row * 8 grid arrangement.
 
